@@ -12,6 +12,7 @@ TraySubsystem::TraySubsystem(okapi::Controller iDriverController, okapi::Control
   , intakeMotors({this->leftIntakeMotor, this->rightIntakeMotor})
   , intakeRollersButton(okapi::ControllerId::master ,okapi::ControllerDigital::R1)
   , outtakeRollersButton(okapi::ControllerId::master ,okapi::ControllerDigital::L1)
+  , outtakeFullSpeedButton(okapi::ControllerId::partner ,okapi::ControllerDigital::R1)
   , scoreStackButton(okapi::ControllerId::master, okapi::ControllerDigital::L2)
   , lowTowerButton(okapi::ControllerId::partner, okapi::ControllerDigital::L2)
   , midTowerButton(okapi::ControllerId::partner, okapi::ControllerDigital::L1)
@@ -115,6 +116,8 @@ void TraySubsystem::update() {
         intakeCube();
       } else if(outtakeRollersButton.isPressed()){
         outtakeCube(100);
+      } else if(outtakeFullSpeedButton.isPressed()){
+        outtakeCube(200);
       } else {
         intakeMotors.moveVelocity(0);
       }

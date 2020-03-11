@@ -67,7 +67,7 @@ private:
 	okapi::ControllerButton intakeRollersButton, outtakeRollersButton;
 
 	// Operator Buttons
-	okapi::ControllerButton scoreStackButton, lowTowerButton, midTowerButton, intakePosButton, manualUpButton, manualDownButton, toggleManualTowerButton, trayDownButton, resetTrayButton;
+	okapi::ControllerButton scoreStackButton, lowTowerButton, midTowerButton, intakePosButton, manualUpButton, manualDownButton, toggleManualTowerButton, trayDownButton, resetTrayButton, outtakeFullSpeedButton;
 	int towerToggles;
 	//toggles
 	bool stackTrayToggle, toggleManualTower;

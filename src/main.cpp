@@ -13,6 +13,7 @@
 #include "User/IntakeCommand.h"
 #include "User/MoveArmCommand.h"
 #include "User/PIDController.h"
+
 int SELECTED_AUTO;
 
 okapi::Controller driver (okapi::ControllerId::master);
@@ -36,23 +37,20 @@ void initialize() {
   drive->reset();
   pros::delay(2000);
 
+  autoSelector.registerAuto("Small Red", SMALL_RED);              //test 1 2 3
+  autoSelector.registerAuto("Small Blue", SMALL_BLUE);            //test 1 2 3
+  autoSelector.registerAuto("Large Red", LARGE_RED);              //test 1 2 3
+  autoSelector.registerAuto("Large Blue", LARGE_BLUE);            //test 1 2 3
+  autoSelector.registerAuto("Large Red Prep", LARGE_RED_PREP);    //test 1 2 3
+  autoSelector.registerAuto("Large Blue Prep", LARGE_BLUE_PREP);  //test 1 2 3
+  autoSelector.registerAuto("One Cube",ONE_CUBE_AUTO);            //test 1 2 3
+  autoSelector.registerAuto("Skills", SKILLS);
 
-  autoSelector.registerAuto("SMALL_RED_6", SMALL_RED_6);
-  autoSelector.registerAuto("SMALL_BLUE_6", SMALL_BLUE_6);
-//  autoSelector.registerAuto("SMALL_RED_8_CUBE", SMALL_RED_8_CUBE);
-//  autoSelector.registerAuto("SMALL_RED_MANUAL", SMALL_RED_MANUAL);
-  autoSelector.registerAuto("ONE Cube",ONE_CUBE_AUTO);
-  autoSelector.registerAuto("LARGE_RED_3", LARGE_RED_3); //tested
-  autoSelector.registerAuto("LARGE_BLUE_3", LARGE_BLUE_3); //tested
-  autoSelector.registerAuto("SMALL_RED_8", SMALL_RED_8);
-  autoSelector.registerAuto("SMALL_BLUE_8", SMALL_BLUE_8);
-  autoSelector.registerAuto("SKILLS", SKILLS);
-  autoSelector.registerAuto("TEST_TURN", TEST_TURN);
-  autoSelector.registerAuto("TEST_DISTANCE", TEST_DISTANCE);
   autoSelector.listOptions();
 }
 
 void disabled() {
+
 }
 
 void competition_initialize() {
@@ -64,11 +62,10 @@ void competition_initialize() {
 
 void deployTray() {
   tray->cubeScorer.tarePosition();
-  tray->outtakeCube(30);
-  tray->cubeScorer.moveAbsolute(307, 100);
-  pros::delay(700);
-  tray->cubeScorer.moveAbsolute(0, 125);
-  pros::delay(700);
+  drive->driveTrain->moveDistance(3_in);
+  drive->driveTrain->moveDistance(-3_in);
+  tray->outtakeCube(200);
+  pros::delay(1000);
   tray->outtakeCube(0);
 
   tray->trayMotor.tarePosition();
@@ -98,6 +95,7 @@ void turn(double angle, double maxSpeed, double timeout) {
   }
   drive->stop();
 }
+
 void stack(){
   tray->outtakeCube(55);
   pros::delay(500);
@@ -112,7 +110,6 @@ void stack(){
   tray->trayMotor.moveVelocity(0);
   pros::delay(500);
   drive->driveTrain->stop();
-
 }
 
 void moveSmallTower() {
@@ -128,11 +125,9 @@ void autonomous() {
       while(true) {
         std::cout << drive->getHeading() << std::flush;
         std::cout << "" << std::flush;
-
-//        std::cout << drive->getLeftEncoder() << std::flush;
-
         pros::delay(1000);
-      break;
+        drive->stop();
+        break;
     }
 
     case ONE_CUBE_AUTO:
@@ -145,187 +140,165 @@ void autonomous() {
       drive->driveTrain->setMaxVelocity(65);
       drive->driveTrain->moveDistance(6_in);
       drive->driveTrain->moveDistance(-6_in);
+      drive->stop();
       break;
 
-      case SMALL_RED_6:
-        //deploy tray
-        drive->reset();
-        tray->intakeCube();
-        drive->driveTrain->setMaxVelocity(110);
-        drive->driveTrain->moveDistance(43_in);
-        turn(-19, 100, 0.75);
-        drive->driveTrain->setMaxVelocity(50);
-        //got cube 1
-        drive->driveTrain->moveDistance(7_in);
-
-        drive->driveTrain->moveDistance(-12_in);
-        turn(120, 50, 1.0);
-        turn(153, 10, 1.5);
-
-        drive->driveTrain->setMaxVelocity(100);
-        drive->driveTrain->moveDistance(31_in);
-        stack();
-
-        break;
-      case SMALL_BLUE_6:
-        //deploy tray
-        drive->reset();
-        tray->intakeCube();
-        drive->driveTrain->setMaxVelocity(110);
-        drive->driveTrain->moveDistance(43_in);
-        turn(19, 100, 0.75);
-        drive->driveTrain->setMaxVelocity(50);
-        //got cube 1
-        drive->driveTrain->moveDistance(7_in);
-
-        drive->driveTrain->moveDistance(-12_in);
-        turn(-120, 50, 1.0);
-        turn(-153, 10, 1.5);
-
-        drive->driveTrain->setMaxVelocity(100);
-        drive->driveTrain->moveDistance(31_in);
-        stack();
-        pros::delay(15000);
-        drive->stop();
-      case LARGE_RED_3:
-        //deploy tray
-        drive->reset();
-        tray->intakeCube();
-        drive->driveTrain->setMaxVelocity(150);
-        drive->driveTrain->moveDistance(48_in);
-        turn(29, 80, 1.5);
-        //First Cube here
-        drive->driveTrain->setMaxVelocity(50);
-        drive->driveTrain->moveDistance(8_in);
-        turn(0, 80, 1);
-        drive->driveTrain->moveDistance(-12_in);
-        turn(42, 80, 1.5);
-        drive->driveTrain->setMaxVelocity(50);
-        drive->driveTrain->moveDistance(20_in);
-        drive->driveTrain->moveDistance(-10_in);
-
-        drive->driveTrain->setMaxVelocity(100);
-        turn(-140, 80, 1);
-
-        drive->driveTrain->moveDistance(35_in);
-        tray->outtakeCube(0);
-        stack();
-        drive->stop();
-        break;
-        case PREP_AUTO:
-          //deploy tray
-          drive->reset();
-          tray->intakeCube();
-          drive->driveTrain->setMaxVelocity(150);
-          drive->driveTrain->moveDistance(48_in);
-          turn(35, 80, 1.5);
-          //First Cube here
-          drive->driveTrain->setMaxVelocity(50);
-          drive->driveTrain->moveDistance(8_in);
-          drive->driveTrain->setMaxVelocity(100);
-          drive->driveTrain->moveDistance(-14_in);
-          turn(85, 80, 1.5);
-          tray->outtakeCube(50);
-          pros::delay(50);
-          tray->intakeCube();
-          drive->driveTrain->setMaxVelocity(100);
-          drive->driveTrain->moveDistance(50_in);
-
-          drive->driveTrain->moveDistance(-12_in);
-
-          drive->driveTrain->turnAngle(144_deg);
-          drive->driveTrain->setMaxVelocity(120);
-          drive->driveTrain->moveDistance(50_in);
-          tray->outtakeCube(0);
-          stack();
-          drive->stop();
-          break;
-
-    case LARGE_BLUE_3:
-    //deploy tray
-    /*drive->reset();
-    tray->intakeCube();
-    drive->driveTrain->setMaxVelocity(100);
-    drive->driveTrain->moveDistance(22_in);
-    turn(90, 80, 2);
-    drive->driveTrain->setMaxVelocity(90);
-    drive->driveTrain->moveDistance(22_in);
-    tray->outtakeCube(0);
-    turn(125, 80, 1);
-    drive->driveTrain->setMaxVelocity(100);
-    drive->driveTrain->moveDistance(12_in);
-
-    stack();*/
-    break;
-
-    case TEST_DISTANCE:
+    case SMALL_RED:
+      //deployTray();
       drive->reset();
-      drive->driveTrain->setMaxVelocity(40);
-      drive->driveTrain->moveDistance(24_in);
+      tray->intakeCube();
+      drive->driveTrain->setMaxVelocity(110);
+      drive->driveTrain->moveDistance(43_in);
+      turn(-19, 100, 0.75);
+      drive->driveTrain->setMaxVelocity(50);
+      //got cube 1
+      drive->driveTrain->moveDistance(7_in);
+
+      drive->driveTrain->moveDistance(-12_in);
+      turn(120, 50, 1.0);
+      turn(153, 10, 1.5);
+
+      drive->driveTrain->setMaxVelocity(100);
+      drive->driveTrain->moveDistance(31_in);
+      stack();
+      drive->stop();
       break;
 
-    case TEST_TURN:
+    case SMALL_BLUE:
+      //deployTray();
       drive->reset();
-      turn(90, 150, 1.5);
+      tray->intakeCube();
+      drive->driveTrain->setMaxVelocity(110);
+      drive->driveTrain->moveDistance(43_in);
+      turn(19, 100, 0.75);
+      drive->driveTrain->setMaxVelocity(50);
+      //got cube 1
+      drive->driveTrain->moveDistance(7_in);
+
+      drive->driveTrain->moveDistance(-12_in);
+      turn(-120, 50, 1.0);
+      turn(-153, 10, 1.5);
+
+      drive->driveTrain->setMaxVelocity(100);
+      drive->driveTrain->moveDistance(31_in);
+      stack();
+      pros::delay(15000);
+      drive->stop();
+      break;
+
+    case LARGE_RED:
+      drive->reset();
+      deployTray();
+      tray->intakeCube();
+      drive->driveTrain->setMaxVelocity(150);
+      drive->driveTrain->moveDistance(30_in);
+      turn(90, 40, 1.5);
+      drive->driveTrain->moveDistance(12_in);
+      turn(-90, 30, 2.5);
+      drive->driveTrain->setMaxVelocity(110);
+      drive->driveTrain->moveDistance(25_in);
+      tray->outtakeCube(0);
+      turn(-135, 50, 1.5);
+
+      drive->driveTrain->moveDistance(12.5_in);
+
+      stack();
+      drive->stop();
+      break;
+
+    case LARGE_BLUE:
+      //deployTray();
+      break;
+
+    case LARGE_RED_PREP:
+      deployTray();
+      drive->reset();
+      tray->intakeCube();
+      drive->driveTrain->setMaxVelocity(150);
+      drive->driveTrain->moveDistance(20_in);
+      turn(90, 60, 1.5);
+      drive->driveTrain->moveDistance(8_in);
+      turn(108, 55, 1.5);
+      drive->driveTrain->setMaxVelocity(100);
+      drive->driveTrain->moveDistance(12_in);
+      turn(115, 55, 0.5);
+      drive->driveTrain->moveDistance(-12_in);
+      turn(-90, 30, 2.5);
+      drive->driveTrain->setMaxVelocity(110);
+      drive->driveTrain->moveDistance(20_in);
+      tray->outtakeCube(0);
+
+      drive->stop();
+      break;
+
+    case LARGE_BLUE_PREP:
       break;
 
     default:
       break;
 
     case SKILLS:
-
       deployTray();
 
-//      drive->driveTrain->setState({0_in, 0_in, 0_deg});
-
       tray->intakeCube();
-      pros::delay(800);
-      tray->outtakeCube(0);
-      pros::delay(200);
-      tray->outtakeCube(70);
-      pros::delay(500);
-      tray->outtakeCube(0);
-
-
       drive->driveTrain->setMaxVelocity(75);
       drive->driveTrain->moveDistance(11_in);
-      turn(-45, 60, 1);
-      drive->driveTrain->moveDistance(20_in);
 
-      moveSmallTower();
-      scoreTower();
-
-      drive->driveTrain->moveDistance(-20_in);
-
-      tray->cubeScorer.moveAbsolute(0, 100);
-      turn(0, 50, 2);
-      pros::delay(250);
-
-      /*drive->driveTrain->setMaxVelocity(35);
-
-      pros::delay(1500);
-
-      drive->driveTrain->setMaxVelocity(35);
-
-//      drive->driveTrain->setState({0_in, 0_in, 0_deg});
-      tray->intakeCube();
-
-      drive->driveTrain->setMaxVelocity(75);
-//      drive->driveTrain->driveToPoint({0.30_m, 0_m});
-      pros::delay(600);
-      drive->driveTrain->setMaxVelocity(45);
-//      drive->driveTrain->driveToPoint({0.45_m, 0_m});
-      pros::delay(600);
-      drive->driveTrain->setMaxVelocity(40);
-//      drive->driveTrain->driveToPoint({0.50_m, 0_m});
-      pros::delay(600);
+      tray->outtakeCube(0);
+      pros::delay(200);
+      tray->outtakeCube(80);
+      pros::delay(500);
       tray->outtakeCube(0);
 
-      tray->outtakeCube(40);
-      pros::delay(500);
+      turn(-45, 60, 1);
+      drive->driveTrain->moveDistance(8_in);
 
-      stack();*/
+      tray->cubeScorer.moveAbsolute(800, 100);
+      pros::delay(800);
+      drive->driveTrain->moveDistance(10_in);
+      tray->outtakeCube(150);
+      pros::delay(1000);
 
+      drive->driveTrain->moveDistance(-10_in);
+      tray->outtakeCube(0);
+      tray->cubeScorer.moveAbsolute(0, 100);
+      drive->driveTrain->moveDistance(-5_in);
+
+      turn(0, 50, 2);
+      drive->driveTrain->moveDistance(-5_in);
+      pros::delay(100);
+      //first tower scored
+
+
+      //get first 4 cubes
+      //   drive->driveTrain->setMaxVelocity(110);
+      //   drive->driveTrain->moveDistance(43_in);
+
+
+
+
+/*
+      //turn and get cube 5
+        //   turn(45, 50, 1.5);
+      //back up
+        //   drive->driveTrain->moveDistance(-3_in);
+      //turn and get cube 6
+        //   turn(5, 50, 1);
+        //   drive->driveTrain->moveDistance(5_in);
+      //back up
+        //   drive->driveTrain->moveDistance(-3_in);
+      //go to 0
+        //   turn(0, 50, 1);
+      //get last 4 cubes
+        //   drive->driveTrain->moveDistance(45_in);
+      //turn 45 degrees
+        //   turn(-45, 50, 1);
+      //go to zone
+        //   drive->driveTrain->moveDistance(10_in);
+      //stack();
+      //back up
+        //   drive->driveTrain->moveDistance(-15_in);
+*/
       drive->driveTrain->stop();
       break;
   }
@@ -342,4 +315,4 @@ void opcontrol() {
  	}
   tray->stop();
  	drive->stop();
- }
+}

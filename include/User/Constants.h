@@ -40,16 +40,13 @@ const bool ARCADE_DRIVE = true;
 const int IMU_PORT = 2;
 const int DO_NOTHING_AUTO = 0;
 const int ONE_CUBE_AUTO = 1;
-const int LARGE_RED_3 = 2;
-const int LARGE_BLUE_3 = 3;
-const int TEST_DISTANCE = 4;
-const int TEST_TURN = 5;
-const int SMALL_RED_6 = 6;
-const int SMALL_BLUE_6 = 7;
-const int SMALL_RED_8 = 8;
-const int SMALL_BLUE_8 = 9;
-const int SKILLS = 10;
-const int PREP_AUTO = 11;
+const int SMALL_RED = 2;
+const int SMALL_BLUE = 3;
+const int LARGE_RED = 4;
+const int LARGE_BLUE = 5;
+const int LARGE_RED_PREP = 6;
+const int LARGE_BLUE_PREP = 7;
+const int SKILLS = 8;
 
 // LIFT SETPOINTS
 const double HOME = 0;
