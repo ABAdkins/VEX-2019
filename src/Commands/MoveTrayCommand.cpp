@@ -10,7 +10,7 @@ MoveTrayCommand::MoveTrayCommand(std::shared_ptr<TraySubsystem> tray, TraySubsys
 }
 
 void MoveTrayCommand::start() {
-
+//  tray->trayMotor.setMaxVelocity(maxSpeed);
 }
 
 void MoveTrayCommand::update() {
