@@ -37,15 +37,15 @@ void initialize() {
   drive->reset();
   pros::delay(2000);
 
-  autoSelector.registerAuto("test", 11);
-  autoSelector.registerAuto("Skills", SKILLS);
+
+  autoSelector.registerAuto("Skills", SKILLS);                    // 12, 18, 30, 40, 50, push randomly
   autoSelector.registerAuto("Small Red", SMALL_RED);              //test 1 2 3
   autoSelector.registerAuto("Small Blue", SMALL_BLUE);            //test 1 2 3
   autoSelector.registerAuto("Large Red", LARGE_RED);              //test 1 2 3
   autoSelector.registerAuto("Large Blue", LARGE_BLUE);            //test 1 2 3
+  autoSelector.registerAuto("One Cube",ONE_CUBE_AUTO);            //test 1 2 3
   autoSelector.registerAuto("Large Red Prep", LARGE_RED_PREP);    //test 1 2 3
   autoSelector.registerAuto("Large Blue Prep", LARGE_BLUE_PREP);  //test 1 2 3
-  autoSelector.registerAuto("One Cube",ONE_CUBE_AUTO);            //test 1 2 3
 
 
   autoSelector.listOptions();
@@ -103,10 +103,10 @@ void stack(){
   pros::delay(500);
   tray->outtakeCube(25);
 
-  CommandRunner::runCommand(new MoveTrayCommand(tray, TraySubsystem::TrayPosition::kStack, 75), 3);
+  CommandRunner::runCommand(new MoveTrayCommand(tray, TraySubsystem::TrayPosition::kStack, 90), 3);
   tray->outtakeCube(100);
   drive->driveTrain->setMaxVelocity(100);
-  drive->driveTrain->moveDistance(-10_in);
+  drive->driveTrain->moveDistance(-8_in);
   tray->outtakeCube(0);
   CommandRunner::runCommand(new MoveTrayCommand(tray, TraySubsystem::TrayPosition::kSlant, 100), 3);
   tray->trayMotor.moveVelocity(0);
@@ -120,7 +120,7 @@ void stackSlowly(){
   tray->outtakeCube(25);
   tray->trayMotor.moveVelocity(100);
 
-  CommandRunner::runCommand(new MoveTrayCommand(tray, TraySubsystem::TrayPosition::kStack, 100), 5);
+  CommandRunner::runCommand(new MoveTrayCommand(tray, TraySubsystem::TrayPosition::kStack, 50), 5);
   tray->outtakeCube(100);
   drive->driveTrain->moveDistance(-10_in);
   tray->outtakeCube(0);
@@ -148,15 +148,9 @@ void autonomous() {
         drive->stop();
         break;
     }
-    case 11:
-      stackSlowly();
 
     case ONE_CUBE_AUTO:
-      tray->cubeScorer.tarePosition();
-      tray->cubeScorer.moveAbsolute(307, 100);
-      pros::delay(700);
-      tray->cubeScorer.moveAbsolute(0, 125);
-      pros::delay(1000);
+      deployTray();
 
       drive->driveTrain->setMaxVelocity(65);
       drive->driveTrain->moveDistance(6_in);
@@ -165,14 +159,14 @@ void autonomous() {
       break;
 
     case SMALL_RED:
-      //deployTray();
+      deployTray();
       drive->reset();
       tray->intakeCube();
       drive->driveTrain->setMaxVelocity(110);
       drive->driveTrain->moveDistance(43_in);
       turn(-19, 100, 0.75);
       drive->driveTrain->setMaxVelocity(50);
-      //got cube 1
+       //got cube 1
       drive->driveTrain->moveDistance(7_in);
 
       drive->driveTrain->moveDistance(-12_in);
@@ -186,7 +180,7 @@ void autonomous() {
       break;
 
     case SMALL_BLUE:
-      //deployTray();
+      deployTray();
       drive->reset();
       tray->intakeCube();
       drive->driveTrain->setMaxVelocity(110);
@@ -264,9 +258,6 @@ void autonomous() {
     case LARGE_BLUE_PREP:
       break;
 
-    default:
-      break;
-
     case SKILLS:
       deployTray();
 
@@ -280,18 +271,18 @@ void autonomous() {
       pros::delay(500);
       tray->outtakeCube(0);
 
-      turn(-48, 60, 1);
+      turn(-47, 60, 1);
       drive->driveTrain->moveDistance(7_in);
 
       tray->cubeScorer.moveAbsolute(300, 100);
       pros::delay(1200);
       drive->driveTrain->setMaxVelocity(40);
-      drive->driveTrain->moveDistance(10_in);
-      tray->outtakeCube(150);
+      drive->driveTrain->moveDistance(11_in);
+      tray->outtakeCube(100);
       pros::delay(1000);
 
       drive->driveTrain->setMaxVelocity(50);
-      drive->driveTrain->moveDistance(-10_in);
+      drive->driveTrain->moveDistance(-11_in);
       tray->outtakeCube(0);
       tray->cubeScorer.moveAbsolute(0, 100);
       drive->driveTrain->moveDistance(-4_in);
@@ -305,38 +296,41 @@ void autonomous() {
       //get first 4 cubes
       tray->intakeCube();
       drive->driveTrain->setMaxVelocity(110);
-      drive->driveTrain->moveDistance(40_in);
+      drive->driveTrain->moveDistance(38_in);
       pros::delay(750);
       drive->driveTrain->setMaxVelocity(50);
       drive->driveTrain->moveDistance(-5_in);
       //turn and get cube 5
       turn(20, 40, 1.25);
-      drive->driveTrain->moveDistance(7_in);
-      drive->driveTrain->moveDistance(-8_in);
+      drive->driveTrain->moveDistance(8_in);
+      drive->driveTrain->moveDistance(-9_in);
       //turn and get cube 6
       turn(0, 35, 1);
-      drive->driveTrain->setMaxVelocity(40);
-      drive->driveTrain->moveDistance(20_in);
+      drive->driveTrain->setMaxVelocity(36);
+      drive->driveTrain->moveDistance(23_in);
       //go to 0
       turn(0, 50, 0.75);
 
-      drive->driveTrain->moveDistance(-35_in);
-      turn(-135, 30, 3);
-      drive->driveTrain->moveDistance(15_in);
+      drive->driveTrain->moveDistance(-32_in);
+      tray->outtakeCube(0);
+      turn(-90, 10, 1.5);
+      turn(-135, 10, 1.5);
+      drive->driveTrain->setMaxVelocity(50);
+      drive->driveTrain->moveDistance(12_in);
       stackSlowly();
-/*
-      drive->driveTrain->setMaxVelocity(100);
-      drive->driveTrain->moveDistance(65_in);
 
-      drive->driveTrain->moveDistance(-10_in);
-      turn(-35, 50, 1);
-      drive->driveTrain->setMaxVelocity(120);
-      drive->driveTrain->moveDistance(20_in);
-
-      stackSlowly();
+      //line up for tower 2
+      turn(90, 10, 3);
       drive->driveTrain->moveDistance(-15_in);
-*/
+      //go to tower 2
+      tray->intakeCube();
+      drive->driveTrain->moveDistance(35_in);
+
+
       drive->driveTrain->stop();
+      break;
+
+    default:
       break;
   }
   tray->stop();
